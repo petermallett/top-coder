@@ -1,4 +1,6 @@
 # http://www.topcoder.com/stat?c=problem_statement&pm=11341&rd=14429
+import math
+
 stacks = [
 	(1, [498, 499]),
 	(4, [491, 492, 495, 497, 498, 499]),
@@ -8,35 +10,24 @@ stacks = [
 	(7, [10, 11, 12, 13, 14, 1, 2, 3, 4, 5, 6, 7, 8, 9])
 	]
 
-def removeSingles(cards):
-	turns = 0
-	for x in cards:
-		d1, d2 = x - 1, x + 1
-		if (not d1 in cards and not d2 in cards):
-			turns += 1
-			cards.remove(x)
-	return turns
-
-def removeDoubles(cards):
-	turns = 0
-	for x in cards:
-		d1, d2 = x - 1, x + 1
-		if (not (d1 in cards and d2 in cards) and (d1 in cards or d2 in cards)):
-			turns += 1
-			cards.remove(x)
-			if (d1 in cards):
-				cards.remove(d1)
-			else:
-				cards.remove(d2)
-	return turns
-
 def maxTurns(cards):
+	runlen = 0
 	turns = 0
-	while (len(cards) != 0):
-		turns += removeSingles(cards)
-		turns += removeDoubles(cards)
-			
+	for i, v in enumerate(cards):
+		prev_i = i - 1
+		if (i == 0):
+			runlen = 1
+		elif (v == (cards[prev_i] + 1)):
+			runlen += 1
+		else:
+			turns += int(math.ceil(runlen / 2))
+			runlen = 1
+	if (runlen > 0):
+		turns += int(math.ceil(runlen / 2))
+
 	return turns
+
 
 for x in stacks:
+	x[1].sort()
 	print(maxTurns(x[1]), ' turns, should be: ', x[0])
